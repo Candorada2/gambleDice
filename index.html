@@ -1,0 +1,234 @@
+<html> 
+<head>
+
+</head>
+    <style>
+.tBox{
+    display:flex;
+     background-color: rgba(0,0,0,0.2); 
+     padding: 5px;
+     border-radius: 5px;
+     font-family:sans-serif;
+     color: white;
+     margin-right: 5px;
+     border:none;
+}
+#topBar{
+    width: 100%;
+    height: 50px;
+    background-color: rgba(0,0,0,0.2);
+    box-shadow: 0px 0px 5px black;
+    z-index: 9999;
+}
+.title{
+    font-family:sans-serif;
+     color: white;
+     margin-left: 50%;
+    transform: translate(-50%);
+    position: inherit;
+
+}
+#dep{
+    width:500px;
+    height: 170px;
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 15px;
+    box-shadow: 0 0 5px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%) translate(0,-100px);
+}
+#dep > *{
+    position: fixed;
+}
+#dep > h1{
+    position: inherit;
+margin-left: 50%;
+transform: translate(-50%);
+margin-top:10px;
+     background-color: rgba(0,0,0,0.2); 
+     padding: 5px;
+     border-radius: 5px;
+     font-family:sans-serif;
+     color: white;
+     border:none;   
+     display:inline;
+}
+.menuItems{
+width:150px;
+margin-left: 25px;
+display:flex;
+     background-color: rgba(0,0,0,0.2); 
+     padding: 5px;
+     border-radius: 5px;
+     font-family:sans-serif;
+     color: white;
+     border:none;
+     margin-bottom: 5px;
+     display:inline;
+}
+.menuItems::placeholder{
+    color:rgb(150,150,150)
+}
+.menuItems:focus{
+    border:none;
+    outline: none;
+}
+    </style>
+    <body style="background-color: green; margin:0px;overflow:hidden; z-index: -99999999;" id = body>
+        <div id = alertBox style="width: 500px;height:200px; background-color: rgb(42, 143, 14); position: absolute; border-radius: 5px; transform: translate(-50%,-5px); left:50%; top:-200px; transition: 2s top; text-align: center; font-size: 30px;">
+        <label style="color:white; font-family:sans-serif; position: inherit; transform: translate(-50%,5px);" id = winType>WinName</label>
+        <label style="color:white; font-family:sans-serif; position: inherit; transform: translate(-50%,120px);" id = winAmount>WinAmount</label>
+        </div>
+        <div id = topBar>
+            <div style="font-family:sans-serif;color: white; position: absolute; top:25px; transform: translate(10px,-50%);">Mega Casino</div>
+            <div id = rightTopBar style="position: absolute; top:25px; left:100%;transform: translate(-100%,-50%) translate(-10px);display:flex;">
+                <input class = tBox type="button" value="+" id = openDep>
+                <div class = tBox>
+                    <label id = bal>1000</label>
+                    <img src="chip.png" style="width: 13px; height: 13px; position: inherit; transform:translate(1px,3px);">
+                </div>
+            </div>
+        </div>
+        <div id = dep style="visibility:hidden;">
+            <input type="button" id = closeDep value="x" style="background-color: rgba(0,0,0,0); border: none; left:100%; transform: translate(-100%) translate(-5px,5px); color: white;">
+<h1>Deposit</h1>
+<input type="text" class = menuItems placeholder="Cash" id = depositCashText style="top:70px">
+<input type="button" class = menuItems value="Deposit" id = depositCashButton style="top:100px" >
+        </div>
+        <div style=" position:absolute;width:200px; height: 170px; background-color: rgba(0,0,0,0); top:100%; transform: translate(0,-100%); overflow: hidden; z-index: 9999;">
+            <div id = menuStyle style=" position:absolute;width:205px; height: 175px; background-color: rgba(0,0,0,0.2); top:100%; transform: translate(0,-100%) translate(-5px,5px); border-radius: 5px; z-index: -9;">
+            </div>
+            <label class = title>Dice Game</label>
+            <select id = dFace class = menuItems style="margin-top:25px;">
+            </select>
+            <input type="text" class = menuItems placeholder="Bet Chips" id = cost>
+            <input type="button" class = menuItems value="Play" id = bet>
+        </div>
+    </body>
+    <script>
+
+var rig = 1.1 // riggs rewards to be x times higher
+var pullChance = new Array(1,0.999871,0.999228,0.9973,0.992798,0.983796,0.967593,0.94123,0.902006,0.847994,0.77855,0.69483,0.600309,0.5,0.399691,0.30517,0.2214506,0.1520062,0.0979938,0.0587706,0.0324074,0.0162037,0.00720165,0.002700617,0.000771605,0.0001286008) ///////IMPORTANT NEEDS TO BE DONE
+       for(i=0;i<pullChance.length;i++){
+pullChance[i] = 1/((1/pullChance[i] - 1)*rig + 1)
+       }
+for(i=5; i<=30;i++){
+var newelm = document.createElement("option")
+var temp 
+if(1/pullChance[i - 5] < 1000){temp = (1/pullChance[i - 5]).toPrecision(3)}else{temp = Math.floor(1/pullChance[i - 5])}
+newelm.value = i
+newelm.innerText = i+"🎲" + " x"+temp+"$"
+dFace.appendChild(newelm)
+        }
+        var chips
+        if(window.localStorage.getItem("Chips")){
+          chips = window.localStorage.getItem("Chips")
+        }else{
+            chips = 1000
+        }
+        bal.innerText = Math.floor(chips).toLocaleString()
+        var style = "width:75;height:75;position:absolute; left:100%; top:50%; transform:translate(0,-50%);border-radius:10px; transition:left 1s , top 1s;"
+//Create Dice
+for(i=0;i<5; i++){
+var newelm = document.createElement("img")
+newelm.style = style
+newelm.src = "dice1.gif"
+newelm.id = "dice"
+body.appendChild(newelm)
+}
+var dice = document.querySelectorAll("#dice")
+//Create Dice
+
+
+var style = "width:75;height:75;position:absolute; left:100%; top:50%; transform:translate(0,-50%);border-radius:10px; transition:left 1s , top 1s; z-index:-1;"
+async function roll(){
+    for(i=0;i<dice.length;i++){
+dice[i].style = style.split("transition:left 1s , top 1s;").join("")
+function temp(i){
+
+    setTimeout(function(){
+              dice[i].style.left = "100%"
+            dice[i].style.top = "50%"
+        dice[i].style = style
+dice[i].style.left = 10 + Math.floor(Math.random()*80) + "%"
+dice[i].style.top = 10 + Math.floor(Math.random()*80) + "%"      
+    },0)
+}
+temp(i)
+}
+
+for(i=0;i<1000;i+=100){
+setTimeout(() => {
+    for(i=0;i<dice.length;i++){
+    dice[i].src = `dice${Math.ceil(Math.random()*6)}.gif`
+}
+}, i); 
+}
+return new Promise((idkwtph) =>{
+setTimeout(() => {
+        idkwtph()
+}, 1100);
+})
+    }
+
+//IMPORTANT
+function winAlert(name,amount){
+    alertBox.style.top = 0
+    setTimeout(() => {
+        alertBox.style.top = -200
+},5000)
+winType.innerText = name
+winAmount.innerText = amount.toLocaleString()
+}
+
+
+var rolling = false
+document.querySelector("#bet").onclick  = async function(){
+    if(!rolling && +cost.value >=0 && +cost.value <= chips){
+            rolling = true
+            chips -= cost.value
+            bal.innerText = Math.floor(chips).toLocaleString()
+            window.localStorage.setItem("Chips",chips)
+waited = await roll()
+    var dices = document.querySelectorAll("#dice")
+var total = 0
+for(i=0;i<dices.length;i++){
+total += +dices[i].src.split("dice")[1].split(".gif")[0]
+}
+rolling = false
+var guess = dFace.children[dFace.selectedIndex].value
+if(guess <= total){
+chips = chips + cost.value/(pullChance[dFace.selectedIndex])
+console.log(chips)
+bal.innerText = Math.floor(chips).toLocaleString()
+window.localStorage.setItem("Chips",chips)
+
+if(guess >= 25){
+    winAlert("Super Win " + Math.floor(1/pullChance[dFace.selectedIndex]) + "x Multi",Math.floor(cost.value/(pullChance[dFace.selectedIndex])).toLocaleString() + " Chips Win")
+}
+}
+
+    }
+
+
+}
+
+closeDep.onclick = function(){
+    dep.style.visibility = "hidden"
+}
+openDep.onclick = function(){
+    dep.style.visibility = "visible"
+}
+
+depositCashButton.onclick = function(){
+if (depositCashText.value >= 0 ){
+    chips = +chips + +depositCashText.value
+   window.localStorage.setItem("Chips",chips)
+   bal.innerText = Math.floor(chips).toLocaleString()
+}
+
+}
+    </script>
+</html>
